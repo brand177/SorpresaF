@@ -1,0 +1,113 @@
+:root{
+  --bg1:#fffdf8; --bg2:#faf6ee;
+  --ink:#333;
+  --amarillo:#ffd54a; --amarillo2:#ffbf00; --glitter:#ffe793;
+  --verde:#2a7f3e; --verdeHoja:#3aa457; --verdeOsc:#1f6a32;
+  --paper:#d7dbd4; --paperEdge:#a8ada6;
+  --rojo:#cc1f2f; --rojoClaro:#e23846;
+}
+*{box-sizing:border-box}
+html,body{ margin:0; color:var(--ink); font-family:'Dancing Script', cursive, system-ui; }
+
+.escena{ min-height:100svh; display:grid; place-items:center; padding:72px 16px 28px; position:relative; overflow:hidden; }
+
+/* Fondo */
+.bg-gradient{
+  position:absolute; inset:0;
+  background:radial-gradient(1200px 600px at 80% 15%, #e9fff9 0%, transparent 60%),
+             radial-gradient(900px 500px at 15% 20%, #fff0db 0%, transparent 65%),
+             linear-gradient(180deg, var(--bg1), var(--bg2));
+  z-index:-4;
+}
+.vignette{ position:absolute; inset:-40px; pointer-events:none; z-index:-3;
+  box-shadow: inset 0 0 140px rgba(0,0,0,.08); }
+
+.bokeh{ position:absolute; border-radius:999px; filter:blur(18px); opacity:.22; pointer-events:none; z-index:-2; }
+.b1{ width:220px;height:220px; left:4%; top:10%; background:#ffdcae; }
+.b2{ width:260px;height:260px; right:8%; top:18%; background:#b7f3e8; }
+.b3{ width:180px;height:180px; left:12%; bottom:8%; background:#ffe5f2; }
+
+/* contenedores de decoración animada */
+#stars, #bubbles{ position:absolute; inset:0; pointer-events:none; z-index:-1; }
+
+.lienzo{ width:min(92vw,600px); display:block; filter: drop-shadow(0 8px 16px rgba(0,0,0,.08)); }
+
+/* Botones (misma fuente) */
+.cta, .replay{ font-family:'Dancing Script', cursive; }
+.cta{
+  position:absolute; top:18%; left:50%; transform:translate(-50%,-50%);
+  font-size:28px; padding:6px 16px; border-radius:16px;
+  border:1px solid #e8e2d5; background:#ffffffcf; backdrop-filter: blur(2px);
+  cursor:pointer; transition:transform .2s ease, opacity .2s ease; z-index:10;
+}
+.cta:hover{ transform:translate(-50%,-50%) scale(1.05) }
+.cta:active{ transform:translate(-50%,-50%) scale(.98) }
+
+.dedicatoria{ margin-top:4px; font-size:40px; text-align:center; }
+.heart{ color:#e63946; display:inline-block; transform-origin:center; animation:beat 1.6s ease-in-out infinite; }
+@keyframes beat{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+
+.replay{
+  margin-top:8px; font-size:22px; padding:2px 14px; border-radius:14px;
+  border:1px solid #e8e2d5; background:#ffffffcc; cursor:pointer; transition:transform .2s ease, opacity .2s ease;
+}
+.replay:hover{ transform:scale(1.04) }
+
+.oculto{ opacity:0; visibility:hidden; pointer-events:none }
+.visible{ opacity:1; visibility:visible }
+
+/* Animaciones */
+@keyframes aparecerFlor{
+  0%{ opacity:0; transform:translateY(30px) scale(.6) rotate(-6deg) }
+  60%{ opacity:1; transform:translateY(-6px) scale(1.05) rotate(3deg) }
+  100%{ opacity:1; transform:translateY(0) scale(1) rotate(0) }
+}
+@keyframes growIn{ 0%{opacity:0; transform:scale(.85) translateY(20px)} 100%{opacity:1; transform:scale(1) translateY(0)} }
+@keyframes flotando{ 0%{transform:translateY(0)} 50%{transform:translateY(-4px)} 100%{transform:translateY(0)} }
+@keyframes subirWrap{ 0%{opacity:0;transform:translateY(90px)} 100%{opacity:1;transform:translateY(0)} }
+@keyframes popBow{ 0%{opacity:0;transform:scale(.4) rotate(-12deg)} 70%{opacity:1;transform:scale(1.08) rotate(4deg)} 100%{opacity:1;transform:scale(1) rotate(0)} }
+@keyframes glitterFall{ 0%{opacity:0;transform:translateY(-20px) scale(.7) rotate(0)} 15%{opacity:1} 100%{opacity:0;transform:translateY(240px) scale(1) rotate(240deg)} }
+@keyframes twinkle{ 0%,100%{opacity:.2; transform:scale(1)} 50%{opacity:1; transform:scale(1.35)} }
+@keyframes floatUp{ 0%{transform:translateY(0); opacity:.0} 20%{opacity:.4} 100%{transform:translateY(-140px); opacity:0} }
+
+/* Flor interna animable (inicialmente oculta) */
+.flower{ opacity:0; visibility:hidden; transform-origin:center; transform-box: fill-box; }
+.flower.visible{ animation:aparecerFlor 1.2s cubic-bezier(.2,.8,.2,1) forwards,
+                 flotando 3.2s ease-in-out 1.2s infinite; visibility:visible; }
+.stem{ stroke:var(--verde); stroke-width:6; fill:none; }
+
+/* Cabeza gerbera */
+.petal{ fill:var(--amarillo); stroke:var(--amarillo2); stroke-width:1.4; }
+.centerMain{ fill:#6a4a00; filter: drop-shadow(0 1px 0 rgba(0,0,0,.25)); }
+.centerDot{ fill:#2b1d00; opacity:.6 }
+.small .petal{ rx:4.8; ry:37 }
+
+/* Verdes */
+.fernStem{ stroke:var(--verdeOsc); stroke-width:3; fill:none; }
+.fernLeaf{ fill:var(--verdeHoja); opacity:.95 }
+.fDot{ fill:#d9f074; stroke:#b7d94a; stroke-width:.6 }
+
+/* Papel del ramo */
+.paper{ fill:var(--paper); stroke:var(--paperEdge); stroke-width:3; }
+.paperFold{ fill:#cfd3cd; stroke:var(--paperEdge); stroke-width:2; }
+.paperRim{ fill:none; stroke:var(--paperEdge); stroke-width:4; }
+#wrapBack.visible, #wrapFront.visible{ animation:subirWrap .9s ease-out forwards; filter: drop-shadow(0 6px 10px rgba(0,0,0,.08)); }
+
+.bowBand{ fill:var(--rojo) } .bowWing{ fill:var(--rojoClaro); stroke:#9e1521; stroke-width:2 } .bowTail{ fill:var(--rojo) }
+#bow.visible{ animation:popBow .7s ease-out forwards }
+
+/* KDGS */
+.kdgs text{ font-size:26px; fill:#666; }
+
+/* Escarcha */
+.glit{ fill:var(--glitter); stroke:#ffcf54; stroke-width:.8; opacity:.95; animation:glitterFall 3.6s ease-in forwards; }
+
+/* Estrellitas y burbujas */
+.star{ position:absolute; width:6px; height:6px; border-radius:50%; background:#fff7c2; box-shadow:0 0 8px #fff1a1; animation:twinkle 2.4s ease-in-out infinite; }
+.bubble{ position:absolute; width:10px; height:10px; border-radius:50%; background:#ffffff80; filter:blur(0.5px); animation:floatUp 6s linear infinite; }
+
+#dedicatoria.visible, #replay.visible{ transition:opacity .7s ease .1s; }
+
+@media (max-width:420px){
+  .cta{ font-size:24px } .dedicatoria{ font-size:34px } .replay{ font-size:20px }
+}

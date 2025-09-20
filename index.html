@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>mi gerberita</title>
+
+  <!-- Tipografía cursiva legible -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="escena">
+    <!-- Fondo decorativo -->
+    <div class="bg-gradient"></div>
+    <div class="vignette"></div>
+    <div class="bokeh b1"></div>
+    <div class="bokeh b2"></div>
+    <div class="bokeh b3"></div>
+
+    <!-- Estrellitas y burbujas (contenedores; se llenan con JS) -->
+    <div id="stars"></div>
+    <div id="bubbles"></div>
+
+    <button id="cta" class="cta" type="button">Dale click aquí</button>
+
+    <svg id="bouquetSVG" class="lienzo" viewBox="0 0 600 700" role="img" aria-label="Ramo de gerberas amarillas">
+      <rect x="0" y="0" width="600" height="700" fill="transparent"></rect>
+
+      <!-- PAPEL TRASERO (entra primero) -->
+      <g id="wrapBack" class="oculto">
+        <path d="M160 455
+                 C150 555, 215 635, 300 655
+                 C385 635, 450 555, 440 455
+                 C370 480, 230 480, 160 455Z"
+              class="paper"/>
+      </g>
+
+      <!-- VERDES (hojas + florecillas de relleno) -->
+      <g id="greens" class="oculto">
+        <!-- Hojas tipo helecho -->
+        <g class="fern" transform="translate(210,455) scale(1)">
+          <path d="M0 0 C -10 -20, -15 -35, -18 -55" class="fernStem"/>
+          <path d="M-2 -10 l-12 -6 l10 -2 z" class="fernLeaf"/>
+          <path d="M-5 -20 l-16 -6 l14 -2 z" class="fernLeaf"/>
+          <path d="M-7 -30 l-16 -6 l14 -2 z" class="fernLeaf"/>
+          <path d="M-9 -40 l-16 -6 l14 -2 z" class="fernLeaf"/>
+        </g>
+        <g class="fern" transform="translate(390,455) scale(-1,1)">
+          <path d="M0 0 C -10 -20, -15 -35, -18 -55" class="fernStem"/>
+          <path d="M-2 -10 l-12 -6 l10 -2 z" class="fernLeaf"/>
+          <path d="M-5 -20 l-16 -6 l14 -2 z" class="fernLeaf"/>
+          <path d="M-7 -30 l-16 -6 l14 -2 z" class="fernLeaf"/>
+          <path d="M-9 -40 l-16 -6 l14 -2 z" class="fernLeaf"/>
+        </g>
+
+        <!-- Relleno verde-amarillo (tipo solidago) -->
+        <g class="filler" transform="translate(260,455)">
+          <circle r="3" cx="-30" cy="-8" class="fDot"/>
+          <circle r="3.3" cx="-20" cy="-14" class="fDot"/>
+          <circle r="2.8" cx="-10" cy="-18" class="fDot"/>
+          <circle r="3.2" cx="5" cy="-20" class="fDot"/>
+          <circle r="3" cx="18" cy="-16" class="fDot"/>
+          <circle r="2.6" cx="30" cy="-10" class="fDot"/>
+          <circle r="2.8" cx="40" cy="-6" class="fDot"/>
+        </g>
+        <g class="filler" transform="translate(325,455)">
+          <circle r="3" cx="-35" cy="-10" class="fDot"/>
+          <circle r="2.6" cx="-25" cy="-16" class="fDot"/>
+          <circle r="3.2" cx="-12" cy="-19" class="fDot"/>
+          <circle r="2.8" cx="0" cy="-21" class="fDot"/>
+          <circle r="3.1" cx="12" cy="-18" class="fDot"/>
+          <circle r="2.7" cx="24" cy="-12" class="fDot"/>
+          <circle r="3.1" cx="36" cy="-6" class="fDot"/>
+        </g>
+      </g>
+
+      <!-- FLORES (dos filas). Ahora TODAS más abajo: +20px -->
+      <g id="flowers">
+        <!-- FILA TRASERA -->
+        <g class="pos" transform="translate(240,350)"><g class="flower">
+          <path class="stem" d="M0 6 C -8 85, -8 140, -3 170"/>
+          <g class="flowerHead"></g></g></g>
+
+        <g class="pos" transform="translate(300,340)"><g class="flower">
+          <path class="stem" d="M0 6 C 0 85, 0 140, 0 170"/>
+          <g class="flowerHead"></g></g></g>
+
+        <g class="pos" transform="translate(360,350)"><g class="flower">
+          <path class="stem" d="M0 6 C 8 85, 8 140, 3 170"/>
+          <g class="flowerHead"></g></g></g>
+
+        <!-- FILA DELANTERA -->
+        <g class="pos" transform="translate(210,380)"><g class="flower">
+          <path class="stem" d="M0 6 C -12 95, -12 150, -6 180"/>
+          <g class="flowerHead small"></g></g></g>
+
+        <g class="pos" transform="translate(300,375)"><g class="flower">
+          <path class="stem" d="M0 6 C 0 95, 0 150, 0 180"/>
+          <g class="flowerHead small"></g></g></g>
+
+        <g class="pos" transform="translate(390,380)"><g class="flower">
+          <path class="stem" d="M0 6 C 12 95, 12 150, 6 180"/>
+          <g class="flowerHead small"></g></g></g>
+      </g>
+
+      <!-- PAPEL FRONTAL + KDGS -->
+      <g id="wrapFront" class="oculto">
+        <path d="M160 455
+                 C150 555, 215 635, 300 655
+                 C385 635, 450 555, 440 455
+                 C370 480, 230 480, 160 455Z"
+              class="paper"/>
+        <path d="M235 635 C250 575, 262 525, 242 485
+                 C280 525, 320 525, 358 485
+                 C338 525, 350 575, 365 635
+                 C325 655, 275 655, 235 635Z"
+              class="paperFold"/>
+        <path d="M160 455 C230 480, 370 480, 440 455"
+              class="paperRim"/>
+        <!-- KDGS con coronita -->
+        <g id="kdgs" transform="translate(300,612)" class="kdgs oculto">
+          <text x="0" y="0" text-anchor="middle">KDGS</text>
+          <g transform="translate(18,-22)">
+            <path d="M0,0 L14,0 L12,-10 L7,-5 L2,-10 Z" fill="#f7c21b" stroke="#d39a00" stroke-width="1"/>
+            <circle cx="7" cy="-7" r="1.8" fill="#e85d8e"/>
+            <rect x="-1" y="0" width="16" height="3.5" rx="1.6" fill="#f0b90b" stroke="#d39a00" stroke-width="0.8"/>
+          </g>
+        </g>
+      </g>
+
+      <!-- MOÑO -->
+      <g id="bow" class="oculto">
+        <rect x="265" y="630" width="70" height="16" rx="8" class="bowBand"/>
+        <path d="M265 638 C240 625, 230 605, 242 590 C258 605, 270 615, 280 630 Z" class="bowWing"/>
+        <path d="M335 638 C360 625, 370 605, 358 590 C342 605, 330 615, 320 630 Z" class="bowWing"/>
+        <path d="M290 640 L285 685 L300 650 Z" class="bowTail"/>
+        <path d="M315 640 L325 685 L305 650 Z" class="bowTail"/>
+      </g>
+
+      <!-- Escarcha -->
+      <g id="glitterLayer"></g>
+    </svg>
+
+    <p id="dedicatoria" class="dedicatoria oculto">
+      las flores para la bebé <span class="heart">♥</span>
+    </p>
+
+    <button id="replay" class="replay oculto" type="button">De nuevo</button>
+  </main>
+
+  <!-- Player oculto + API de YouTube (solo para música) -->
+  <div id="ytplayer" style="width:0;height:0;overflow:hidden"></div>
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script src="script.js"></script>
+</body>
+</html>
