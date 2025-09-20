@@ -14,7 +14,17 @@ function onYouTubeIframeAPIReady(){
   });
 }
 function playMusic(){
-  if (!playerReady){ pendingPlay = true; return; }   // por si el API aún carga
+  // 👉 Primero intenta el audio local (funciona mejor en móvil)
+  if (bgm) {
+    try {
+      bgm.currentTime = 0;
+      bgm.volume = 0.6;
+      bgm.play();
+      return; // si suena, no necesitamos YouTube
+    } catch(e){}
+  }
+  // Respaldo YouTube si hiciera falta
+  if (!playerReady){ pendingPlay = true; return; }
   pendingPlay = false;
   try { ytPlayer.seekTo(0, true); ytPlayer.playVideo(); } catch(e){}
 }
@@ -57,6 +67,7 @@ const dedicatoria = document.getElementById("dedicatoria");
 const glitterLayer = document.getElementById("glitterLayer");
 const stars = document.getElementById("stars");
 const bubbles = document.getElementById("bubbles");
+const bgm = document.getElementById("bgm"); // ← añadido
 
 let playing = false;
 
@@ -163,6 +174,8 @@ btn.addEventListener("click", playSequence);
 
 // Botón "De nuevo"
 replayBtn.addEventListener("click", () => {
+  // Pausa el audio antes de reiniciar (solo audio, no afecta animación)
+  if (bgm) { bgm.pause(); }
   hide(replayBtn);
   btn.style.opacity="1"; btn.style.pointerEvents="auto";
   setTimeout(playSequence, 80);
