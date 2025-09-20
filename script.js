@@ -14,21 +14,64 @@ function onYouTubeIframeAPIReady(){
   });
 }
 function playMusic(){
-  // 👉 Primero intenta el audio local (funciona mejor en móvil)
+  // 👉 Primero intentar el audio local (mejor en móvil)
   if (bgm) {
     try {
       bgm.currentTime = 0;
       bgm.volume = 0.6;
-      bgm.play();
-      return; // si suena, no necesitamos YouTube
-    } catch(e){}
+      const p = bgm.play();
+      if (p && typeof p.then === "function") {
+        p.then(()=>{}).catch(()=>{ /* si falla, dejamos que YouTube intente */ });
+      }
+    } catch(_) {}
   }
-  // Respaldo YouTube si hiciera falta
+  // Luego respaldo YouTube si es necesario
   if (!playerReady){ pendingPlay = true; return; }
   pendingPlay = false;
   try { ytPlayer.seekTo(0, true); ytPlayer.playVideo(); } catch(e){}
 }
 /* ========================================= */
+
+// ===== Arranque automático con fallback a YouTube =====
+function autoStartAudio() {
+  // 1) Intentar MP3 local apenas cargue
+  if (bgm) {
+    try {
+      bgm.volume = 0.6;
+      bgm.currentTime = 0;
+      const p = bgm.play();
+      if (p && typeof p.then === "function") {
+        p.then(() => {
+          // MP3 sonando ✅
+        }).catch(() => {
+          // MP3 bloqueado -> YouTube
+          startYouTubeFallback();
+        });
+      }
+      return;
+    } catch (e) {
+      startYouTubeFallback();
+      return;
+    }
+  }
+  startYouTubeFallback();
+}
+
+function startYouTubeFallback() {
+  if (playerReady && ytPlayer) {
+    try { ytPlayer.seekTo(0, true); ytPlayer.playVideo(); } catch(_) {}
+    return;
+  }
+  pendingPlay = true; // cuando el API esté listo, se reproducirá
+}
+
+// Si el navegador bloquea todo, arranca al primer toque en cualquier lugar
+function unlockOnFirstGesture() {
+  autoStartAudio();
+  window.removeEventListener('pointerdown', unlockOnFirstGesture, {capture:true});
+  window.removeEventListener('touchstart', unlockOnFirstGesture, {capture:true});
+}
+// ======================================================
 
 // --- Cabeza gerbera (pétalos delgados) ---
 function buildHead(group, small=false) {
@@ -67,7 +110,7 @@ const dedicatoria = document.getElementById("dedicatoria");
 const glitterLayer = document.getElementById("glitterLayer");
 const stars = document.getElementById("stars");
 const bubbles = document.getElementById("bubbles");
-const bgm = document.getElementById("bgm"); // ← añadido
+const bgm = document.getElementById("bgm");
 
 let playing = false;
 
@@ -100,6 +143,11 @@ function seedBubbles(n=14){
 }
 seedStars();
 seedBubbles();
+
+// ⬇️ Arranque de audio al abrir + desbloqueo por primer toque (si hace falta)
+window.addEventListener('load', autoStartAudio, { once: true });
+window.addEventListener('pointerdown', unlockOnFirstGesture, { once:true, capture:true });
+window.addEventListener('touchstart', unlockOnFirstGesture, { once:true, capture:true });
 
 // ------- Utilidades -------
 function clearGlitter(){ while (glitterLayer.firstChild) glitterLayer.removeChild(glitterLayer.firstChild); }
@@ -166,7 +214,7 @@ function playSequence(){
     playing = false;
   }, afterFlowers + 900);
 
-  // 9) Música (se reproduce con este clic)
+  // 9) Música (se reproduce con este clic también, por si estaba bloqueado)
   playMusic();
 }
 
@@ -174,8 +222,6 @@ btn.addEventListener("click", playSequence);
 
 // Botón "De nuevo"
 replayBtn.addEventListener("click", () => {
-  // Pausa el audio antes de reiniciar (solo audio, no afecta animación)
-  if (bgm) { bgm.pause(); }
   hide(replayBtn);
   btn.style.opacity="1"; btn.style.pointerEvents="auto";
   setTimeout(playSequence, 80);
